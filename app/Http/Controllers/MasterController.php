@@ -100,22 +100,40 @@ class MasterController extends Controller
             'kecamatan'             =>$col[6],
             'kelurahan'             =>$col[7],
             'kode_pos'              =>$col[8],
-            'resident_name'         =>$col[9],
-            'nama_jalan'            =>$col[10],
-            'no_rumah_gedung'       =>$col[11],
-            'unit'                  =>$col[12],
-            'resident_category'     =>$col[13],
-            'homepass_status'       =>$col[14],
-            'resident_type'         =>$col[15],
+            'spliter_distribusi_koordinat'              =>$col[9],
+            'splitter_id'              =>$col[10],
+            'resident_name'         =>$col[11],
+            'nama_jalan'            =>$col[12],
+            'no_rumah_gedung'       =>$col[13],
+            'unit'                  =>$col[14],
+            'resident_category'     =>$col[15],
+            'homepass_status'       =>$col[16],
+            'resident_type'         =>$col[17],
             'create_id'             =>$create_id,
             'isp_id'                =>$req->isp
           ];
+          $parts = explode(',', str_replace(' ', '', $col[9]));
+    
+          // Assign latitude and longitude
+          $latitude = $parts[0];
+          $longitude = $parts[1];
+          $uniqueArray[$col[10]] = [
+            'isp_id'    => $req->isp,
+            'create_id' => $create_id,
+            'nama_odp'  => $col[10],
+            'lon'       => $longitude,
+            'lat'       => $latitude
+          ];
           // dd($req,$item);
       }
+      $uniqueODP = array_values($uniqueArray);
       foreach (array_chunk($item, 1000) as $k => $v)
       {
         GlobalModel::insertOrUpdate('master_homepass', $v);
-        sleep(1);
+      }
+      foreach (array_chunk($uniqueODP, 1000) as $k => $v)
+      {
+        GlobalModel::insertOrUpdate('master_odp', $v);
       }
       
       return redirect()->back()->with('alerts', ['type' => 'success', 'text' => 'Berhasil!']);
