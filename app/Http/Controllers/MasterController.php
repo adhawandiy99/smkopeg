@@ -113,7 +113,8 @@ class MasterController extends Controller
             'isp_id'                =>$req->isp
           ];
           if($col[9] && $col[10]){
-            $parts = explode(',', str_replace(' ', '', $col[9]));
+            $coordinate = str_replace(' ', ',', $col[9]);
+            $parts = explode(',', str_replace(',,', ',', $coordinate));
             // Assign latitude and longitude
             $latitude = $parts[0];
             $longitude = $parts[1];
