@@ -537,7 +537,7 @@
                           $('#kelurahan').val(homepass.kelurahan);
                           $('#kecamatan').val(homepass.kecamatan);
                           $('#kota').val(homepass.kota);
-                          $('#alamat_pelanggan').val(homepass.nama_jalan);
+                          $('#alamat_pelanggan').val(homepass.nama_jalan+' '+homepass.no_rumah_gedung);
                           
                           $homepassSelect.append(
                               `<option value="${homepass.id_homepass}" selected>${homepass.id_homepass}</option>`

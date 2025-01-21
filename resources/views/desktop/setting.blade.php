@@ -74,6 +74,66 @@
     </div>
   </div>
 </div>
+
+
+<div class="table-responsive">
+    <table class="table table-striped table-rounded border border-gray-300 table-row-bordered table-row-gray-300 gy-7 gs-7">
+        <thead>
+            <tr class="fw-semibold fs-4 text-gray-800">
+                <th scope="col">#</th>
+                <th scope="col">First</th>
+                <th scope="col">Last</th>
+                <th scope="col">Handle</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <th scope="row">1</th>
+                <td>Mark</td>
+                <td>Otto</td>
+                <td><a class="btn btn-primary" data-bs-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
+    Link with href
+  </a></td>
+            </tr>
+            <tr class="collapse" id="collapseExample">
+                <td colspan="4">
+                    <table class="table table-row-dashed table-row-gray-500 gy-5 gs-5 mb-0">
+                        <thead>
+                            <tr class="fw-semibold fs-6 text-gray-800">
+                                <th scope="col">Header</th>
+                                <th scope="col">Header</th>
+                                <th scope="col">Header</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <th scope="row">A</th>
+                                <td>First</td>
+                                <td>Last</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">B</th>
+                                <td>First</td>
+                                <td>Last</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">C</th>
+                                <td>First</td>
+                                <td>Last</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <th scope="row">3</th>
+                <td>Larry</td>
+                <td>the Bird</td>
+                <td>@twitter</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
 @endsection
 @section('modal')
 <div class="modal fade" tabindex="-1" id="modal_paket">
