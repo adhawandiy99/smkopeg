@@ -542,7 +542,7 @@
                           $homepassSelect.append(
                               `<option value="${homepass.id_homepass}" selected>${homepass.id_homepass}</option>`
                           );
-                          
+                          $odpSelect.val(homepass.splitter_id).trigger('change');
                       }else{
                         response.homepassed.forEach(function (hp) {
                               $homepassSelect.append(
