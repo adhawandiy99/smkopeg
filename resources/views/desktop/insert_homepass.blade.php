@@ -24,7 +24,7 @@
 			            Paste Homepass
 			            <span class="text-danger">*</span>
 			        </label>
-			        <textarea name="paste" class="form-control" id="paste" placeholder="homepass_id|region|sub_region|provinsi|kota|kecamatan|kelurahan|kode_pos|homepassed_koordinat|resident_type|resident_name|nama_jalan_|no_rumah_gedung|unit|pop_id" autocomplete="off" required>{{ $data->paste ?? old('paste') }}</textarea>
+			        <textarea name="paste" class="form-control" id="paste" placeholder="homepass_id|homepass_koordinat|region|sub_region|provinsi|kota|kecamatan|kelurahan|kode_pos|resident_name|nama_jalan_|no_rumah_gedung|unit|resident_category|homepass_status|resident_type" autocomplete="off" required>{{ $data->paste ?? old('paste') }}</textarea>
 			        <div class="invalid-feedback">Please provide a valid paste from excel.</div>
 			    </div>
 			    
