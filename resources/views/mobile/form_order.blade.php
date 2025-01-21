@@ -528,24 +528,22 @@
                   }
 
                   $odpSelect.trigger('change');
+                  $homepassSelect.empty().append('<option value="">Select</option>');
+                  if (response.homepassed && response.homepassed.length > 0) {
 
-                  if (response.homepassed && response.homepassed.length > 0 && !data_pelanggan) {
                       let homepass = response.homepassed[0];
-                      if (homepass) {
+                      if (!data_pelanggan) {
                           $('#kelurahan').val(homepass.kelurahan);
                           $('#kecamatan').val(homepass.kecamatan);
                           $('#kota').val(homepass.kota);
                           $('#alamat_pelanggan').val(homepass.nama_jalan);
-                          $homepassSelect.empty().append('<option value="">Select</option>');
+                          
                           $homepassSelect.append(
                               `<option value="${homepass.id_homepass}" selected>${homepass.id_homepass}</option>`
                           );
-                          $homepassSelect.trigger('change');
-                      }
-                  } else {
-                      $homepassSelect.empty().append('<option value="">Select</option>');
-                      if (response.homepassed && Array.isArray(response.homepassed)) {
-                          response.homepassed.forEach(function (hp) {
+                          
+                      }else{
+                        response.homepassed.forEach(function (hp) {
                               $homepassSelect.append(
                                   `<option value="${hp.id_homepass}">${hp.id_homepass} (${hp.distance_in_meters} m)</option>`
                               );
@@ -553,9 +551,9 @@
                           $homepassSelect.append(
                               `<option value="${data_pelanggan.homepass}" selected>${data_pelanggan.homepass}</option>`
                           );
-                          $homepassSelect.trigger('change');
                       }
-                  }
+                      $homepassSelect.trigger('change');
+                  } 
                   $('.msg').text(response.message);
               })
               .fail(function (error) {
