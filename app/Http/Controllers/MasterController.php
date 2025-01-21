@@ -112,18 +112,20 @@ class MasterController extends Controller
             'create_id'             =>$create_id,
             'isp_id'                =>$req->isp
           ];
-          $parts = explode(',', str_replace(' ', '', $col[9]));
-    
-          // Assign latitude and longitude
-          $latitude = $parts[0];
-          $longitude = $parts[1];
-          $uniqueArray[$col[10]] = [
-            'isp_id'    => $req->isp,
-            'create_id' => $create_id,
-            'nama_odp'  => $col[10],
-            'lon'       => $longitude,
-            'lat'       => $latitude
-          ];
+          if($col[9] && $col[10]){
+            $parts = explode(',', str_replace(' ', '', $col[9]));
+            // Assign latitude and longitude
+            $latitude = $parts[0];
+            $longitude = $parts[1];
+            $uniqueArray[$col[10]] = [
+              'isp_id'    => $req->isp,
+              'create_id' => $create_id,
+              'nama_odp'  => $col[10],
+              'lon'       => $longitude,
+              'lat'       => $latitude
+            ]; 
+          }
+          
           // dd($req,$item);
       }
       $uniqueODP = array_values($uniqueArray);
