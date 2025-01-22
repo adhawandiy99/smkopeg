@@ -735,7 +735,7 @@
     }
 
     
-    function addOrUpdateMarker(lat, lng, markerId, popupText) {
+    function addOrUpdateMarker(lat, lng, markerId, popupText,icon) {
       const markerSizes = {
         small: [20, 32],
         medium: [30, 48],
