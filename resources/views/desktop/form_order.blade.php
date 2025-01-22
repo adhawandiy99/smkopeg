@@ -733,14 +733,31 @@
       return dms; // Return if already in decimal format
     }
 
+    
     function addOrUpdateMarker(lat, lng, markerId, popupText) {
-        if (markerHomepass[markerId]) {
-            // Update existing marker
-            markerHomepass[markerId].setLatLng([lat, lng]).setPopupContent(popupText).openPopup();
-        } else {
-            // Add new marker
-            markerHomepass[markerId] = L.marker([lat, lng]).addTo(map).bindPopup(popupText).openPopup();
-        }
+      const markerSizes = {
+        small: [20, 32],
+        medium: [30, 48],
+        large: [40, 64]
+      };
+
+      // Get the size dimensions
+      const [iconWidth, iconHeight] = markerSizes['small'];
+
+      // Create a custom icon
+      const customIconHome = L.icon({
+          iconUrl: `/images/location_home.png`, // Replace with your marker icon URL
+          iconSize: [iconWidth, iconHeight], // Size of the icon
+          iconAnchor: [iconWidth / 2, iconHeight], // Anchor point
+          popupAnchor: [0, -iconHeight / 2] // Popup position relative to the icon
+      });
+      if (markerHomepass[markerId]) {
+          // Update existing marker
+          markerHomepass[markerId].setLatLng([lat, lng]).setIcon(customIconHome).setPopupContent(popupText);
+      } else {
+          // Add new marker
+          markerHomepass[markerId] = L.marker([lat, lng]).addTo(map).setIcon(customIconHome).bindPopup(popupText);
+      }
     }
     function deleteAllMarkerHomepass() {
         for (let markerId in markerHomepass) {

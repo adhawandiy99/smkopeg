@@ -174,7 +174,7 @@ class MasterController extends Controller
             DB::raw('ROUND(6371000 * ACOS( COS(RADIANS(lat)) * COS(RADIANS('.$lat.')) * COS(RADIANS('.$lon.') - RADIANS(lon)) + SIN(RADIANS(lat)) * SIN(RADIANS('.$lat.')) ), 0) AS distance_in_meters')
         )
         ->where('isp_id', $req->id_isp)
-        ->havingRaw('distance_in_meters < ?', [500]) // Ensure the having condition also has its own parameter
+        ->havingRaw('distance_in_meters < ?', [2000]) // Ensure the having condition also has its own parameter
         ->orderBy('distance_in_meters','asc')
         ->get();
     $odp_lain =  DB::table('master_odp')
@@ -183,7 +183,7 @@ class MasterController extends Controller
             DB::raw('ROUND(6371000 * ACOS( COS(RADIANS(lat)) * COS(RADIANS('.$lat.')) * COS(RADIANS('.$lon.') - RADIANS(lon)) + SIN(RADIANS(lat)) * SIN(RADIANS('.$lat.')) ), 0) AS distance_in_meters')
         )
         ->where('isp_id', '!=', $req->id_isp)
-        ->havingRaw('distance_in_meters < ?', [500]) // Ensure the having condition also has its own parameter
+        ->havingRaw('distance_in_meters < ?', [2000]) // Ensure the having condition also has its own parameter
         ->orderBy('distance_in_meters','asc')
         ->first();
     $homepass = DB::table('master_homepass')

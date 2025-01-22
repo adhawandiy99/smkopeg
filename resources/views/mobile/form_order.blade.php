@@ -639,10 +639,10 @@
         });
         if (markerHomepass[markerId]) {
             // Update existing marker
-            markerHomepass[markerId].setLatLng([lat, lng]).setIcon(customIconHome).setPopupContent(popupText).openPopup();
+            markerHomepass[markerId].setLatLng([lat, lng]).setIcon(customIconHome).setPopupContent(popupText);
         } else {
             // Add new marker
-            markerHomepass[markerId] = L.marker([lat, lng]).addTo(map).setIcon(customIconHome).bindPopup(popupText).openPopup();
+            markerHomepass[markerId] = L.marker([lat, lng]).addTo(map).setIcon(customIconHome).bindPopup(popupText);
         }
       }
       function deleteAllMarkerHomepass() {
