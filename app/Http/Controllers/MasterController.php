@@ -203,7 +203,7 @@ class MasterController extends Controller
       ->havingRaw('distance_in_meters < ?', [50])
       ->orderBy('distance_in_meters', 'asc')
       ->addBinding([$lat, $lon, $lat], 'select') // Bind values for placeholders in DB::raw
-      ->get()->limit(10);
+      ->limit(10)->get();
     if(count($odps) && count($homepass)){
       $msg = "Area Layanan Tercover Internet ISP";
     }else if(count($odps) && !count($homepass)){
