@@ -2,7 +2,20 @@
 @section('css')
 	<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" />
 @endsection
-@section('tittle', 'Input Order')
+@section('tittle')
+
+@if($data && $data->status_id>=1)
+  @if($data->status_id == 1)
+    Approval TL
+  @else if($data->status_id == 2)
+    Approval SPV
+  @else if($data->status_id > 2)
+    Admin Action
+  @endif
+@else
+  Input Order
+@endif
+@endsection
 @section('content')
 @if(!session('auth')->tl && !session('auth')->spv && Request::segment(2)=='new')
 <div class="col-xl">
