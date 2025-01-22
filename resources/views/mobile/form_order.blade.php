@@ -587,6 +587,10 @@
 
       function updateMap(latitude, longitude) {
           if (!map) {
+              const markerClusterGroup = L.markerClusterGroup();
+
+              // Add the cluster group to the map
+              map.addLayer(markerClusterGroup);
               map = L.map('map').setView([latitude, longitude], 17);
               sector.forEach(function (polygonData) {
                   var polygonCoordinates = JSON.parse(polygonData.polygons);
@@ -620,38 +624,43 @@
           koordinatPelanggan = latitude + ',' + longitude;
           checkAndSubmit();
       }
+
       function addOrUpdateMarker(lat, lng, markerId, popupText) {
-        const markerSizes = {
-          small: [20, 32],
-          medium: [30, 48],
-          large: [40, 64]
-        };
+          const markerSizes = {
+              small: [20, 32],
+              medium: [30, 48],
+              large: [40, 64]
+          };
 
-        // Get the size dimensions
-        const [iconWidth, iconHeight] = markerSizes['small'];
+          // Get the size dimensions
+          const [iconWidth, iconHeight] = markerSizes['small'];
 
-        // Create a custom icon
-        const customIconHome = L.icon({
-            iconUrl: `/images/location_home.png`, // Replace with your marker icon URL
-            iconSize: [iconWidth, iconHeight], // Size of the icon
-            iconAnchor: [iconWidth / 2, iconHeight], // Anchor point
-            popupAnchor: [0, -iconHeight / 2] // Popup position relative to the icon
-        });
-        if (markerHomepass[markerId]) {
-            // Update existing marker
-            markerHomepass[markerId].setLatLng([lat, lng]).setIcon(customIconHome).setPopupContent(popupText).openPopup();
-        } else {
-            // Add new marker
-            markerHomepass[markerId] = L.marker([lat, lng]).addTo(map).setIcon(customIconHome).bindPopup(popupText).openPopup();
-        }
-      }
-      function deleteAllMarkerHomepass() {
-          for (let markerId in markerHomepass) {
-              if (markerHomepass.hasOwnProperty(markerId)) {
-                  // Remove the marker from the map
-                  map.removeLayer(markerHomepass[markerId]);
-              }
+          // Create a custom icon
+          const customIconHome = L.icon({
+              iconUrl: `/images/location_home.png`, // Replace with your marker icon URL
+              iconSize: [iconWidth, iconHeight], // Size of the icon
+              iconAnchor: [iconWidth / 2, iconHeight], // Anchor point
+              popupAnchor: [0, -iconHeight / 2] // Popup position relative to the icon
+          });
+
+          if (markerHomepass[markerId]) {
+              // Update existing marker
+              markerHomepass[markerId]
+                  .setLatLng([lat, lng])
+                  .setIcon(customIconHome)
+                  .setPopupContent(popupText)
+                  .openPopup();
+          } else {
+              // Add new marker
+              const newMarker = L.marker([lat, lng], { icon: customIconHome }).bindPopup(popupText);
+              markerClusterGroup.addLayer(newMarker); // Add marker to cluster group
+              markerHomepass[markerId] = newMarker;
           }
+      }
+
+      function deleteAllMarkerHomepass() {
+          // Remove all markers from the cluster group
+          markerClusterGroup.clearLayers();
           // Clear the markerHomepass object
           markerHomepass = {};
       }
