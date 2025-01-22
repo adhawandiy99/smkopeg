@@ -2,6 +2,9 @@
 
 @section('css')
 <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.css" />
+<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.Default.css" />
+
 <style type="text/css">
   .error{
     color:red;
@@ -409,6 +412,7 @@
 @section('js')
   <script src="/mobile/plugins/rolldate/dist/rolldate.min.js"></script>
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster.js"></script>
   @if(Session::has('alerts'))
     <script type="text/javascript">
       var autoActivates = new bootstrap.Offcanvas(document.getElementsByClassName('alert-auto-activate')[0])
