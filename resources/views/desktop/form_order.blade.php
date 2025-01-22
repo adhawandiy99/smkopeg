@@ -544,12 +544,12 @@
                           );
                           $odpSelect.val(homepass.splitter_id).trigger('change');
                       }else{
-                        deleteAllMarkerHomepass();
+                        deleteAllMarkers(markerHomepass);
                         response.homepassed.forEach(function (hp) {
                             $homepassSelect.append(
                                 `<option value="${hp.id_homepass}">${hp.id_homepass} (${hp.distance_in_meters} m)</option>`
                             );
-                            addOrUpdateMarker(hp.latitude, hp.longitude, hp.id_homepass, hp.id_homepass);
+                            addOrUpdateMarkers(hp.latitude, hp.longitude, hp.id_homepass, hp.id_homepass, 'home');
                         });
                         $homepassSelect.append(
                             `<option value="${data_pelanggan.homepass}" selected>${data_pelanggan.homepass}</option>`
@@ -734,7 +734,7 @@
     }
 
     
-    function addOrUpdateMarker(lat, lng, markerId, popupText) {
+    function addOrUpdateMarkers(lat, lng, markerId, popupText, icon) {
       const markerSizes = {
         small: [20, 32],
         medium: [30, 48],
@@ -746,7 +746,7 @@
 
       // Create a custom icon
       const customIconHome = L.icon({
-          iconUrl: `/images/location_home.png`, // Replace with your marker icon URL
+          iconUrl: `/images/location_${color}.png`, // Replace with your marker icon URL
           iconSize: [iconWidth, iconHeight], // Size of the icon
           iconAnchor: [iconWidth / 2, iconHeight], // Anchor point
           popupAnchor: [0, -iconHeight / 2] // Popup position relative to the icon
@@ -759,15 +759,15 @@
           markerHomepass[markerId] = L.marker([lat, lng]).addTo(map).setIcon(customIconHome).bindPopup(popupText);
       }
     }
-    function deleteAllMarkerHomepass() {
-        for (let markerId in markerHomepass) {
-            if (markerHomepass.hasOwnProperty(markerId)) {
+    function deleteAllMarkers(markers) {
+        for (let markerId in markers) {
+            if (markers.hasOwnProperty(markerId)) {
                 // Remove the marker from the map
-                map.removeLayer(markerHomepass[markerId]);
+                map.removeLayer(markers[markerId]);
             }
         }
         // Clear the markerHomepass object
-        markerHomepass = {};
+        markers = {};
     }
 
     // Select the file input element
