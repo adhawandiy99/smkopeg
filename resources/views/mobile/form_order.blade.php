@@ -550,7 +550,7 @@
                           $homepassSelect.append(
                               `<option value="${hp.id_homepass}">${hp.id_homepass} (${hp.distance_in_meters} m)</option>`
                           );
-                          addOrUpdateMarkers(hp.latitude, hp.longitude, hp.id_homepass, hp.id_homepass, 'home');
+                          addOrUpdateMarker(hp.latitude, hp.longitude, hp.id_homepass, hp.id_homepass, 'home');
                         });
                         $homepassSelect.append(
                             `<option value="${data_pelanggan.homepass}" selected>${data_pelanggan.homepass}</option>`
