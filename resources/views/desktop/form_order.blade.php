@@ -746,7 +746,7 @@
 
       // Create a custom icon
       const customIconHome = L.icon({
-          iconUrl: `/images/location_${color}.png`, // Replace with your marker icon URL
+          iconUrl: `/images/location_${icon}.png`, // Replace with your marker icon URL
           iconSize: [iconWidth, iconHeight], // Size of the icon
           iconAnchor: [iconWidth / 2, iconHeight], // Anchor point
           popupAnchor: [0, -iconHeight / 2] // Popup position relative to the icon
