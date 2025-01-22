@@ -420,7 +420,7 @@
   <script type="text/javascript">
     $(document).ready(function () {
       var data_pelanggan = <?= json_encode($data); ?>;
-      
+
       const markerClusterGroup = L.markerClusterGroup();
       let map, marker, markerHomepass;
       let sector = <?= json_encode($sector); ?>;
@@ -590,8 +590,9 @@
           if (!map) {
 
               // Add the cluster group to the map
-              map.addLayer(markerClusterGroup);
               map = L.map('map').setView([latitude, longitude], 17);
+              
+              map.addLayer(markerClusterGroup);
               sector.forEach(function (polygonData) {
                   var polygonCoordinates = JSON.parse(polygonData.polygons);
                   var latLngs = polygonCoordinates.map(coord => [parseFloat(coord[0]), parseFloat(coord[1])]);
