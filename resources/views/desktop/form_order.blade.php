@@ -456,7 +456,7 @@
 <script type="text/javascript">
 	$(document).ready(function () {
     var data_pelanggan = <?= json_encode($data); ?>;
-    
+    let markerHomepass;
     let koordinatPelanggan = data_pelanggan?.koordinat_pelanggan ?? '';
     let selectedIsp = data_pelanggan?.isp_id ?? '';
     let selectedPaket = data_pelanggan?.paket_id ?? '';
@@ -732,7 +732,7 @@
       }
       return dms; // Return if already in decimal format
     }
-    
+
     function addOrUpdateMarker(lat, lng, markerId, popupText) {
         if (markerHomepass[markerId]) {
             // Update existing marker
