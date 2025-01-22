@@ -421,7 +421,7 @@
     $(document).ready(function () {
       var data_pelanggan = <?= json_encode($data); ?>;
 
-      let map, marker;
+      let map, marker, markerHomepass;
       let sector = <?= json_encode($sector); ?>;
       let koordinatPelanggan = '';
       let selectedIsp = '';
@@ -542,14 +542,16 @@
                           );
                           $odpSelect.val(homepass.splitter_id).trigger('change');
                       }else{
+                        deleteAllMarkerHomepass();
                         response.homepassed.forEach(function (hp) {
-                              $homepassSelect.append(
-                                  `<option value="${hp.id_homepass}">${hp.id_homepass} (${hp.distance_in_meters} m)</option>`
-                              );
-                          });
                           $homepassSelect.append(
-                              `<option value="${data_pelanggan.homepass}" selected>${data_pelanggan.homepass}</option>`
+                              `<option value="${hp.id_homepass}">${hp.id_homepass} (${hp.distance_in_meters} m)</option>`
                           );
+                          addOrUpdateMarker(hp.latitude, hp.longitude, hp.id_homepass, hp.id_homepass);
+                        });
+                        $homepassSelect.append(
+                            `<option value="${data_pelanggan.homepass}" selected>${data_pelanggan.homepass}</option>`
+                        );
                       }
                       $homepassSelect.trigger('change');
                   } 
@@ -616,7 +618,26 @@
           koordinatPelanggan = latitude + ',' + longitude;
           checkAndSubmit();
       }
-
+      function addOrUpdateMarker(lat, lng, markerId, popupText) {
+          if (markerHomepass[markerId]) {
+              // Update existing marker
+              markerHomepass[markerId].setLatLng([lat, lng]).setPopupContent(popupText).openPopup();
+          } else {
+              // Add new marker
+              markerHomepass[markerId] = L.marker([lat, lng]).addTo(map).bindPopup(popupText).openPopup();
+          }
+      }
+      function deleteAllMarkerHomepass() {
+          for (let markerId in markerHomepass) {
+              if (markerHomepass.hasOwnProperty(markerId)) {
+                  // Remove the marker from the map
+                  map.removeLayer(markerHomepass[markerId]);
+              }
+          }
+          // Clear the markerHomepass object
+          markerHomepass = {};
+      }
+      
       function handleCoordinateInput() {
           let koordinat = $('#koordinat_pelanggan').val();
           let coords = koordinat.split(',').map(item => parseFloat(item.trim()));

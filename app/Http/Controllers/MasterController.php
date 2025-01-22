@@ -189,7 +189,9 @@ class MasterController extends Controller
     $homepass = DB::table('master_homepass')
       ->select(
           '*',
-          DB::raw('ROUND(6371000 * ACOS( 
+          DB::raw('SUBSTRING_INDEX(homepassed_koordinat, \',\', 1) as latitude,
+            SUBSTRING_INDEX(homepassed_koordinat, \',\', -1) as longitude,
+            ROUND(6371000 * ACOS( 
               COS(RADIANS(SUBSTRING_INDEX(homepassed_koordinat, \',\', 1))) 
               * COS(RADIANS(?)) 
               * COS(RADIANS(?) - RADIANS(TRIM(SUBSTRING_INDEX(homepassed_koordinat, \',\', -1)))) 
@@ -198,7 +200,7 @@ class MasterController extends Controller
           ), 0) AS distance_in_meters')
       )
       ->where('isp_id', $req->id_isp)
-      ->havingRaw('distance_in_meters < ?', [500])
+      ->havingRaw('distance_in_meters < ?', [50])
       ->orderBy('distance_in_meters', 'asc')
       ->addBinding([$lat, $lon, $lat], 'select') // Bind values for placeholders in DB::raw
       ->get();
