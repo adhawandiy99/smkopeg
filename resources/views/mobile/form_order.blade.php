@@ -421,7 +421,7 @@
     $(document).ready(function () {
       var data_pelanggan = <?= json_encode($data); ?>;
 
-      const markerClusterGroup = L.markerClusterGroup();
+      
       let map, marker, markerHomepass;
       let sector = <?= json_encode($sector); ?>;
       let koordinatPelanggan = '';
@@ -591,7 +591,7 @@
 
               // Add the cluster group to the map
               map = L.map('map').setView([latitude, longitude], 17);
-              
+              const markerClusterGroup = L.markerClusterGroup();
               map.addLayer(markerClusterGroup);
               sector.forEach(function (polygonData) {
                   var polygonCoordinates = JSON.parse(polygonData.polygons);
