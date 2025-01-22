@@ -754,10 +754,10 @@
       });
       if (markerHomepass[markerId]) {
           // Update existing marker
-          markerHomepass[markerId].setLatLng([lat, lng]).setIcon(customIconHome).setPopupContent(popupText);
+          markerHomepass[markerId].setLatLng([lat, lng]).setIcon(customIconHome);
       } else {
           // Add new marker
-          markerHomepass[markerId] = L.marker([lat, lng]).addTo(map).setIcon(customIconHome).bindPopup(popupText);
+          markerHomepass[markerId] = L.marker([lat, lng]).addTo(map).setIcon(customIconHome);
       }
     }
     function deleteAllMarkerHomepass() {
