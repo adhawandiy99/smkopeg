@@ -605,7 +605,9 @@
                   L.polygon(latLngs, { color: 'blue', fillColor: '#f2f2f2', fillOpacity: 0.5 }).addTo(map);
               });
               L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                  attribution: '&copy; OpenStreetMap contributors'
+                  attribution: '&copy; OpenStreetMap contributors',
+                  maxZoom: 19, // Specify the maximum zoom level
+            minZoom: 1
               }).addTo(map);
               map.on('click', function (e) {
                   let lat = e.latlng.lat;
