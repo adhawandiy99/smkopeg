@@ -13,8 +13,24 @@
   }
 </style>
 @endsection
+@section('tittle')
+  @if($data && $data->status_id >= 1)
+    @switch($data->status_id)
+      @case(1)
+        Approval TL
+        @break
 
-@section('tittle', 'Input Order')
+      @case(2)
+        Approval SPV
+        @break
+
+      @default
+        Admin Action
+    @endswitch
+  @else
+    Input Order
+  @endif
+@endsection
 
 @section('content')
 @if(!session('auth')->tl && !session('auth')->spv && Request::segment(2)=='new')
