@@ -2,9 +2,6 @@
 
 @section('css')
 <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.css" />
-<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.Default.css" />
-
 <style type="text/css">
   .error{
     color:red;
@@ -412,7 +409,6 @@
 @section('js')
   <script src="/mobile/plugins/rolldate/dist/rolldate.min.js"></script>
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-  <script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster.js"></script>
   @if(Session::has('alerts'))
     <script type="text/javascript">
       var autoActivates = new bootstrap.Offcanvas(document.getElementsByClassName('alert-auto-activate')[0])
@@ -425,7 +421,6 @@
     $(document).ready(function () {
       var data_pelanggan = <?= json_encode($data); ?>;
 
-      let markerClusterGroup;
       let map, marker, markerHomepass;
       let sector = <?= json_encode($sector); ?>;
       let koordinatPelanggan = '';
@@ -592,22 +587,14 @@
 
       function updateMap(latitude, longitude) {
           if (!map) {
-
-              // Add the cluster group to the map
               map = L.map('map').setView([latitude, longitude], 17);
-              if (!markerClusterGroup) {
-                  markerClusterGroup = L.markerClusterGroup();
-                  map.addLayer(markerClusterGroup);
-              }
               sector.forEach(function (polygonData) {
                   var polygonCoordinates = JSON.parse(polygonData.polygons);
                   var latLngs = polygonCoordinates.map(coord => [parseFloat(coord[0]), parseFloat(coord[1])]);
                   L.polygon(latLngs, { color: 'blue', fillColor: '#f2f2f2', fillOpacity: 0.5 }).addTo(map);
               });
               L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                  attribution: '&copy; OpenStreetMap contributors',
-                  maxZoom: 19, // Specify the maximum zoom level
-            minZoom: 1
+                  attribution: '&copy; OpenStreetMap contributors'
               }).addTo(map);
               map.on('click', function (e) {
                   let lat = e.latlng.lat;
@@ -633,43 +620,38 @@
           koordinatPelanggan = latitude + ',' + longitude;
           checkAndSubmit();
       }
-
       function addOrUpdateMarker(lat, lng, markerId, popupText) {
-          const markerSizes = {
-              small: [20, 32],
-              medium: [30, 48],
-              large: [40, 64]
-          };
+        const markerSizes = {
+          small: [20, 32],
+          medium: [30, 48],
+          large: [40, 64]
+        };
 
-          // Get the size dimensions
-          const [iconWidth, iconHeight] = markerSizes['small'];
+        // Get the size dimensions
+        const [iconWidth, iconHeight] = markerSizes['small'];
 
-          // Create a custom icon
-          const customIconHome = L.icon({
-              iconUrl: `/images/location_home.png`, // Replace with your marker icon URL
-              iconSize: [iconWidth, iconHeight], // Size of the icon
-              iconAnchor: [iconWidth / 2, iconHeight], // Anchor point
-              popupAnchor: [0, -iconHeight / 2] // Popup position relative to the icon
-          });
-
-          if (markerHomepass[markerId]) {
-              // Update existing marker
-              markerHomepass[markerId]
-                  .setLatLng([lat, lng])
-                  .setIcon(customIconHome)
-                  .setPopupContent(popupText)
-                  .openPopup();
-          } else {
-              // Add new marker
-              const newMarker = L.marker([lat, lng], { icon: customIconHome }).bindPopup(popupText);
-              markerClusterGroup.addLayer(newMarker); // Add marker to cluster group
-              markerHomepass[markerId] = newMarker;
-          }
+        // Create a custom icon
+        const customIconHome = L.icon({
+            iconUrl: `/images/location_home.png`, // Replace with your marker icon URL
+            iconSize: [iconWidth, iconHeight], // Size of the icon
+            iconAnchor: [iconWidth / 2, iconHeight], // Anchor point
+            popupAnchor: [0, -iconHeight / 2] // Popup position relative to the icon
+        });
+        if (markerHomepass[markerId]) {
+            // Update existing marker
+            markerHomepass[markerId].setLatLng([lat, lng]).setIcon(customIconHome).setPopupContent(popupText).openPopup();
+        } else {
+            // Add new marker
+            markerHomepass[markerId] = L.marker([lat, lng]).addTo(map).setIcon(customIconHome).bindPopup(popupText).openPopup();
+        }
       }
-
       function deleteAllMarkerHomepass() {
-          // Remove all markers from the cluster group
-          markerClusterGroup.clearLayers();
+          for (let markerId in markerHomepass) {
+              if (markerHomepass.hasOwnProperty(markerId)) {
+                  // Remove the marker from the map
+                  map.removeLayer(markerHomepass[markerId]);
+              }
+          }
           // Clear the markerHomepass object
           markerHomepass = {};
       }
