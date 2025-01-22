@@ -510,7 +510,7 @@
                   id_isp: selectedIsp
               })
               .done(function (response) {
-
+                  deleteAllMarkerHomepass();
                   let $odpSelect = $('#odp');
                   let $homepassSelect = $('#homepass');
                   $odpSelect.empty().append('<option value="">Select</option>');
@@ -526,6 +526,7 @@
                                   `<option value="${odp.id_odp}">${odp.nama_odp} (${odp.distance_in_meters} m)</option>`
                               );
                           }
+                          addOrUpdateMarker(odp.lat, odp.lon, odp.nama_odp, odp.nama_odp, 'green');
                       });
                   }
 
@@ -544,12 +545,12 @@
                           );
                           $odpSelect.val(homepass.splitter_id).trigger('change');
                       }else{
-                        deleteAllMarkers(markerHomepass);
+                        
                         response.homepassed.forEach(function (hp) {
                             $homepassSelect.append(
                                 `<option value="${hp.id_homepass}">${hp.id_homepass} (${hp.distance_in_meters} m)</option>`
                             );
-                            addOrUpdateMarkers(hp.latitude, hp.longitude, hp.id_homepass, hp.id_homepass, 'home');
+                            addOrUpdateMarker(hp.latitude, hp.longitude, hp.id_homepass, hp.id_homepass, 'home');
                         });
                         $homepassSelect.append(
                             `<option value="${data_pelanggan.homepass}" selected>${data_pelanggan.homepass}</option>`
@@ -734,7 +735,7 @@
     }
 
     
-    function addOrUpdateMarkers(lat, lng, markerId, popupText, icon) {
+    function addOrUpdateMarker(lat, lng, markerId, popupText) {
       const markerSizes = {
         small: [20, 32],
         medium: [30, 48],
@@ -759,15 +760,15 @@
           markerHomepass[markerId] = L.marker([lat, lng]).addTo(map).setIcon(customIconHome).bindPopup(popupText);
       }
     }
-    function deleteAllMarkers(markers) {
-        for (let markerId in markers) {
-            if (markers.hasOwnProperty(markerId)) {
+    function deleteAllMarkerHomepass() {
+        for (let markerId in markerHomepass) {
+            if (markerHomepass.hasOwnProperty(markerId)) {
                 // Remove the marker from the map
-                map.removeLayer(markers[markerId]);
+                map.removeLayer(markerHomepass[markerId]);
             }
         }
         // Clear the markerHomepass object
-        markers = {};
+        markerHomepass = {};
     }
 
     // Select the file input element
