@@ -227,7 +227,8 @@ class MasterController extends Controller
     if(in_array(session('auth')->role_user, [1, 2])){
       $isp = GlobalModel::getAll('master_isp')->keyBy('id_isp');
       $paket = GlobalModel::getAll('master_paket')->keyBy('id_paket');
-      return view('desktop.setting', compact('isp','paket'));
+      $promo = GlobalModel::getAll('master_promo');
+      return view('desktop.setting', compact('isp','paket','promo'));
     }else{
       return view('desktop.akses_restrict');
     }
@@ -283,6 +284,27 @@ class MasterController extends Controller
       GlobalModel::update('master_isp', [['id_isp', $req->id_isp]], $data);
     }else{
       GlobalModel::insert('master_isp', $data);
+    }
+    return redirect()->back()->with('alerts', ['type' => 'success', 'text' => 'Berhasil!']);
+  }
+  public function promo_save(Request $req)
+  {
+    $req->validate([
+        'id_promo'          => 'required',
+        'nama_promo'        => 'required|string',
+        'expired_promo'        => 'required|string',
+        'paket_id'        => 'required|integer',
+    ]);
+    $data = [
+      'nama_promo'        => $req->nama_promo,
+      'expired'          => $req->expired_promo,
+      'paket_id'          => $req->paket_id,
+    ];
+    $promo = GlobalModel::getById('master_promo', [['id_promo', $req->id_promo]]);
+    if($promo){
+      GlobalModel::update('master_promo', [['id_promo', $req->id_promo]], $data);
+    }else{
+      GlobalModel::insert('master_promo', $data);
     }
     return redirect()->back()->with('alerts', ['type' => 'success', 'text' => 'Berhasil!']);
   }

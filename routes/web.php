@@ -64,6 +64,7 @@ Route::middleware(['custom-auth'])->group(function () {
     Route::get('/setting', [MasterController::class, 'setting']);
     Route::post('/paket', [MasterController::class, 'paket_save']);
     Route::post('/isp', [MasterController::class, 'isp_save']);
+    Route::post('/promo', [MasterController::class, 'promo_save']);
     Route::get('/update_status_batch', [MasterController::class, 'update_status_batch']);
     Route::post('/update_status_batch', [MasterController::class, 'update_status_batch_save']);
 });

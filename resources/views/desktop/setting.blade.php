@@ -18,7 +18,7 @@
 
       <div class="card-body">
         <div class="table-responsive">
-  		    <table class="table align-middle table-row-dashed fs-6 gy-5 dataTable no-footer" id="table_paket">
+  		    <table class="table align-middle table-row-dashed fs-6 gy-2 dataTable no-footer" id="table_paket">
   		      <thead>
   		        <tr class="text-start text-muted fw-bolder fs-7 text-uppercase gs-0">
   		          <th>#</th>
@@ -36,7 +36,11 @@
                 <tr>
                   <td>{{ $number++ }}</td>
                   <td>{{ $isp[$l->isp_id]->nama_isp ?? 'not set' }}</td>
-                  <td>{{ $l->nama_paket }}</td>
+                  <td>
+                    <a data-bs-toggle="collapse" href="#collapse_{{ $l->id_paket }}" role="button" aria-expanded="false" aria-controls="collapse_{{ $l->id_paket }}">
+                      {{ $l->nama_paket }}
+                    </a>
+                  </td>
                   <td>{{ $l->expired }}</td>
                   <td class="text-end">
                     <a class="btn btn-icon btn-flex btn-light-primary w-30px h-30px me-3" data-bs-toggle="modal" data-bs-target="#modal_paket" data-bs-paket="{{ $key }}">
@@ -45,8 +49,52 @@
                         <span class="path2"></span>
                       </i>
                     </a>
+                    <a class="btn btn-icon btn-flex btn-light-primary w-30px h-30px me-3" data-bs-toggle="modal" data-bs-target="#modal_promo" data-bs-promo="new" data-bs-paket_id="{{ $key }}">
+                      <i class="ki-duotone ki-plus fs-2" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Tambah Promo">
+                        <span class="path1"></span>
+                        <span class="path2"></span>
+                      </i>
+                    </a>
                   </td>
                 </tr>
+                <tr class="collapse" id="collapse_{{ $l->id_paket }}">
+                  <td>&nbsp;</td>
+                  <td colspan="4">
+                    <table class="table align-middle table-row-dashed fs-6 gy-1" id="table_sub_paket">
+                      <thead>
+                        <tr class="text-start text-muted fw-bolder fs-7 text-uppercase gs-0">
+                          <th>#</th>
+                          <th>Nama Promo</th>
+                          <th>Expired</th>
+                          <th>Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        @php
+                          $nopromo = 1;
+                        @endphp
+                        @foreach($promo as $keypromo => $p)
+                          @if($p->paket_id == $l->id_paket)
+                            <tr>
+                              <td>{{ $nopromo++ }}</td>
+                              <td>{{ $p->nama_promo }}</td>
+                              <td>{{ $p->expired }}</td>
+                              <td class="text-end">
+                                <a class="btn btn-icon btn-flex btn-light-primary w-30px h-30px me-3" data-bs-toggle="modal" data-bs-target="#modal_promo" data-bs-promo="{{ $keypromo }}" data-bs-paket_id="{{ $p->paket_id }}">
+                                  <i class="ki-duotone ki-notepad-edit fs-2" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Edit paket">
+                                    <span class="path1"></span>
+                                    <span class="path2"></span>
+                                  </i>
+                                </a>
+                              </td>
+                            </tr>
+                          @endif
+                        @endforeach
+                      </tbody>
+                    </table>
+                  </td>
+                </tr>
+
               @endforeach
   		      </tbody>
   		    </table>
@@ -75,65 +123,6 @@
   </div>
 </div>
 
-
-<div class="table-responsive">
-    <table class="table table-striped table-rounded border border-gray-300 table-row-bordered table-row-gray-300 gy-7 gs-7">
-        <thead>
-            <tr class="fw-semibold fs-4 text-gray-800">
-                <th scope="col">#</th>
-                <th scope="col">First</th>
-                <th scope="col">Last</th>
-                <th scope="col">Handle</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <th scope="row">1</th>
-                <td>Mark</td>
-                <td>Otto</td>
-                <td><a class="btn btn-primary" data-bs-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
-    Link with href
-  </a></td>
-            </tr>
-            <tr class="collapse" id="collapseExample">
-                <td colspan="4">
-                    <table class="table table-row-dashed table-row-gray-500 gy-5 gs-5 mb-0">
-                        <thead>
-                            <tr class="fw-semibold fs-6 text-gray-800">
-                                <th scope="col">Header</th>
-                                <th scope="col">Header</th>
-                                <th scope="col">Header</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <th scope="row">A</th>
-                                <td>First</td>
-                                <td>Last</td>
-                            </tr>
-                            <tr>
-                                <th scope="row">B</th>
-                                <td>First</td>
-                                <td>Last</td>
-                            </tr>
-                            <tr>
-                                <th scope="row">C</th>
-                                <td>First</td>
-                                <td>Last</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </td>
-            </tr>
-            <tr>
-                <th scope="row">3</th>
-                <td>Larry</td>
-                <td>the Bird</td>
-                <td>@twitter</td>
-            </tr>
-        </tbody>
-    </table>
-</div>
 @endsection
 @section('modal')
 <div class="modal fade" tabindex="-1" id="modal_paket">
@@ -245,14 +234,14 @@
       <div class="modal-body">
         <form action="/isp" method="post" id="form_isp">
           <input type="hidden" name="id_isp">
-        	<div class="mb-8 fv-row">
+          <div class="mb-8 fv-row">
             <label class="d-flex align-items-center fs-6 fw-bold mb-2">
               <span class="required">Nama ISP</span>
             </label>
             <input type="text" class="form-control form-control-solid" placeholder="Enter ISP Name" name="nama_isp">
             <div class="fv-plugins-message-container invalid-feedback"></div>
           </div>
-        	
+          
           <div class="mb-8 fv-row">
             <label class="d-flex align-items-center fs-6 fw-bold mb-2">
               <span class="required">Select Status</span>
@@ -262,7 +251,7 @@
               <option value="1">Active</option>
               <option value="0">Lock</option>
             </select>
-        	</div>
+          </div>
         </form>
       </div>
       <div class="modal-footer">
@@ -272,27 +261,85 @@
     </div>
   </div>
 </div>
+
+<div class="modal fade" tabindex="-1" id="modal_promo">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Form Promo</h5>
+        <div class="btn btn-icon btn-sm btn-active-light-primary ms-2" data-bs-dismiss="modal" aria-label="Close">
+          <span class="svg-icon svg-icon-2x"></span>
+        </div>
+      </div>
+      <div class="modal-body">
+        <form action="/promo" method="post" id="form_promo">
+          <input type="hidden" name="id_promo">
+          <input type="hidden" name="paket_id">
+          <div class="mb-8 fv-row">
+            <label class="d-flex align-items-center fs-6 fw-bold mb-2">
+              <span class="required">Nama Promo</span>
+            </label>
+            <input type="text" class="form-control form-control-solid" placeholder="Enter Nama Promo" name="nama_promo">
+            <div class="fv-plugins-message-container invalid-feedback"></div>
+          </div>
+          
+          <div class="mb-8 fv-row">
+            <label class="d-flex align-items-center fs-6 fw-bold mb-2">
+              <span class="required">Expired</span>
+            </label>
+            <input type="text" class="form-control form-control-solid" placeholder="Enter Expired" name="expired_promo" id="expired_promo">
+            <div class="fv-plugins-message-container invalid-feedback"></div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+        <button id="submit_promo" type="button" class="btn btn-primary">Submit</button>
+      </div>
+    </div>
+  </div>
+</div>
 @endsection
 @section('js')
 <script type="text/javascript">
 	$(document).ready(function () {
-		var isp = <?= json_encode($isp); ?>;
-		var modal_isp = $('#modal_isp');
-		modal_isp.on('show.bs.modal', function (event) {
-		    $('input[name=id_isp]').val('');
-		    $('input[name=nama_isp]').val('');
-		    $('select[name=status]').val('');
-		    var button = $(event.relatedTarget);
-		    var id_isp = button.data('bs-isp');
-		    if (id_isp !== 'new') {
-		        $('input[name=id_isp]').val(isp[id_isp].id_isp);
-		        $('input[name=nama_isp]').val(isp[id_isp].nama_isp);
-		        $('select[name=status]').val(isp[id_isp].status);
-		    } else {
-		        $('input[name=id_isp]').val(id_isp);
-		    }
-		    $('select[name=status]').trigger('change');
-		});
+    var isp = <?= json_encode($isp); ?>;
+    var modal_isp = $('#modal_isp');
+    modal_isp.on('show.bs.modal', function (event) {
+        $('input[name=id_isp]').val('');
+        $('input[name=nama_isp]').val('');
+        $('select[name=status]').val('');
+        var button = $(event.relatedTarget);
+        var id_isp = button.data('bs-isp');
+        if (id_isp !== 'new') {
+            $('input[name=id_isp]').val(isp[id_isp].id_isp);
+            $('input[name=nama_isp]').val(isp[id_isp].nama_isp);
+            $('select[name=status]').val(isp[id_isp].status);
+        } else {
+            $('input[name=id_isp]').val(id_isp);
+        }
+        $('select[name=status]').trigger('change');
+    });
+
+
+    var promo = <?= json_encode($promo); ?>;
+    var modal_promo = $('#modal_promo');
+    modal_promo.on('show.bs.modal', function (event) {
+        $('input[name=id_promo]').val('');
+        $('input[name=paket_id]').val('');
+        $('input[name=nama_promo]').val('');
+        $('input[name=expired_promo]').val('');
+        var button = $(event.relatedTarget);
+        var id_promo = button.data('bs-promo');
+        if (id_promo !== 'new') {
+            $('input[name=id_promo]').val(promo[id_promo].id_promo);
+            $('input[name=paket_id]').val(promo[id_promo].paket_id);
+            $('input[name=nama_promo]').val(promo[id_promo].nama_promo);
+            $('input[name=expired_promo]').val(promo[id_promo].expired);
+        } else {
+            $('input[name=id_promo]').val(id_promo);
+        }
+    });
 
 		var paket = <?= json_encode($paket); ?>;
 		var modal_paket = $('#modal_paket');
@@ -316,48 +363,91 @@
 		    $('select[name=isp]').trigger('change');
 		});
 
-		const form_isp = document.querySelector('#form_isp');
-	  var validator_isp = FormValidation.formValidation(form_isp,{
-	    fields: {
-	      'nama_isp': {
-	        validators: {
-	          notEmpty: {
-	            message: 'required'
-	          }
-	        }
-	      },
-	      'status': {
-	        validators: {
-	          notEmpty: {
-	            message: 'required'
-	          }
-	        }
-	      },
-	    },
-	    plugins: {
-	      trigger: new FormValidation.plugins.Trigger(),
-	      bootstrap: new FormValidation.plugins.Bootstrap5({
-	          rowSelector: '.fv-row',
-	          eleInvalidClass: '',
-	          eleValidClass: ''
-	      })
-	    }
-	  });
+    const form_isp = document.querySelector('#form_isp');
+    var validator_isp = FormValidation.formValidation(form_isp,{
+      fields: {
+        'nama_isp': {
+          validators: {
+            notEmpty: {
+              message: 'required'
+            }
+          }
+        },
+        'status': {
+          validators: {
+            notEmpty: {
+              message: 'required'
+            }
+          }
+        },
+      },
+      plugins: {
+        trigger: new FormValidation.plugins.Trigger(),
+        bootstrap: new FormValidation.plugins.Bootstrap5({
+            rowSelector: '.fv-row',
+            eleInvalidClass: '',
+            eleValidClass: ''
+        })
+      }
+    });
 
-		$('#submit_isp').on('click', function (e) {
-		    e.preventDefault();
+    $('#submit_isp').on('click', function (e) {
+        e.preventDefault();
 
-		    if (validator_isp) {
-		        validator_isp.validate().then(function (status) {
-		            console.log('validated!');
-		            if (status === 'Valid') {
-		                $('#submit_isp').attr('data-kt-indicator', 'on');
-		                $('#submit_isp').prop('disabled', true);
-		                $('#form_isp').submit();
-		            }
-		        });
-		    }
-		});
+        if (validator_isp) {
+            validator_isp.validate().then(function (status) {
+                console.log('validated!');
+                if (status === 'Valid') {
+                    $('#submit_isp').attr('data-kt-indicator', 'on');
+                    $('#submit_isp').prop('disabled', true);
+                    $('#form_isp').submit();
+                }
+            });
+        }
+    });
+
+    const form_promo = document.querySelector('#form_promo');
+    var validator_promo = FormValidation.formValidation(form_promo,{
+      fields: {
+        'nama_promo': {
+          validators: {
+            notEmpty: {
+              message: 'required'
+            }
+          }
+        },
+        'expired_promo': {
+          validators: {
+            notEmpty: {
+              message: 'required'
+            }
+          }
+        },
+      },
+      plugins: {
+        trigger: new FormValidation.plugins.Trigger(),
+        bootstrap: new FormValidation.plugins.Bootstrap5({
+            rowSelector: '.fv-row',
+            eleInvalidClass: '',
+            eleValidClass: ''
+        })
+      }
+    });
+
+    $('#submit_promo').on('click', function (e) {
+        e.preventDefault();
+
+        if (validator_promo) {
+            validator_promo.validate().then(function (status) {
+                console.log('validated!');
+                if (status === 'Valid') {
+                    $('#submit_promo').attr('data-kt-indicator', 'on');
+                    $('#submit_promo').prop('disabled', true);
+                    $('#form_promo').submit();
+                }
+            });
+        }
+    });
 
 		const form_paket = document.querySelector('#form_paket');
 	  var validator_paket = FormValidation.formValidation(form_paket,{
