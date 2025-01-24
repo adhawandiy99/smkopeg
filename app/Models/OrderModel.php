@@ -42,6 +42,55 @@ class OrderModel
       ->orderBy('a.id_master_order', 'desc')
       ->get();
   }
-
+  public static function getFeeSummarySales($aktor, $date){
+    $query = DB::table('master_order as a')->select(
+        'create_by',
+        DB::raw('SUM(IF(a.status_id in(3,5,6), fee_sales, 0)) as est_pendapatan'),
+        DB::raw('SUM(IF(a.status_rekon=1, fee_sales, 0)) as est_fee'),
+        DB::raw('SUM(IF(a.status_rekon=1, fee_sales, 0)) - SUM(IF(a.tgl_curn is not null, biaya_langganan, 0)) as total_fee')
+    )
+    ->where(function ($q) use($date) {
+        $q->where('create_at', 'like', $date.'%')
+              ->orWhere('tgl_curn', 'like', $date.'%')
+              ->orWhere('tgl_rekon', 'like', $date.'%');
+    })
+    ->where('create_by', $aktor)
+    ->groupBy('create_by');
+    return $query->first();
+  }
+  public static function getFeeSummaryTL($aktor, $date){
+    $query = DB::table('master_order as a')->select(
+        'create_by',
+        DB::raw('SUM(IF(a.status_id in(3,5,6), fee_tl, 0)) as est_pendapatan'),
+        DB::raw('SUM(IF(a.status_rekon=1, fee_tl, 0)) as est_fee'),
+        DB::raw('SUM(IF(a.status_rekon=1, fee_tl, 0)) - SUM(IF(a.tgl_curn is not null, biaya_langganan, 0)) as total_fee')
+    )
+    ->leftJoin('master_user as b', 'a.create_by', '=', 'b.id_user')
+    ->where(function ($q) use($date) {
+        $q->where('create_at', 'like', $date.'%')
+              ->orWhere('tgl_curn', 'like', $date.'%')
+              ->orWhere('tgl_rekon', 'like', $date.'%');
+    })
+    ->where('b.tl', $aktor)
+    ->groupBy('create_by');
+    return $query->first();
+  }
+  public static function getFeeSummarySPV($aktor, $date){
+    $query = DB::table('master_order as a')->select(
+        'create_by',
+        DB::raw('SUM(IF(a.status_id in(3,5,6), fee_spv, 0)) as est_pendapatan'),
+        DB::raw('SUM(IF(a.status_rekon=1, fee_spv, 0)) as est_fee'),
+        DB::raw('SUM(IF(a.status_rekon=1, fee_spv, 0)) - SUM(IF(a.tgl_curn is not null, biaya_langganan, 0)) as total_fee')
+    )
+    ->leftJoin('master_user as b', 'a.create_by', '=', 'b.id_user')
+    ->where(function ($q) use($date) {
+        $q->where('create_at', 'like', $date.'%')
+              ->orWhere('tgl_curn', 'like', $date.'%')
+              ->orWhere('tgl_rekon', 'like', $date.'%');
+    })
+    ->where('b.spv', $aktor)
+    ->groupBy('create_by');
+    return $query->first();
+  }
 }
 ?>

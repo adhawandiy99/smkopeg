@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\DB;
 use Validator;
 use Session;
 use App\Models\GlobalModel;
+use App\Models\OrderModel;
 
 date_default_timezone_set("Asia/Makassar");
 
@@ -18,12 +19,20 @@ class HomeController extends Controller
   {
     
     $roles = GlobalModel::getAll('master_role')->keyBy('id_role');
-    // dd($roles);
+    if(session('auth')->role_user == 3){
+      $fee_summary = OrderModel::getFeeSummarySales(session('auth')->id_user,date('Y-m'));
+    }elseif(session('auth')->role_user == 4){
+      $fee_summary = OrderModel::getFeeSummaryTL(session('auth')->username,date('Y-m'));
+    }elseif(session('auth')->role_user == 5){
+      $fee_summary = OrderModel::getFeeSummarySPV(session('auth')->username,date('Y-m'));
+    }else{
+      $fee_summary = null;
+    }
     // Detect device type via request user-agent
     if (preg_match('/mobile/i', request()->header('User-Agent'))) {
-      return view('mobile.home', compact('roles'));
+      return view('mobile.home', compact('roles', 'fee_summary'));
     } else {
-      return view('desktop.home', compact('roles'));
+      return view('desktop.home', compact('roles', 'fee_summary'));
     }
   }
   public function upload(Request $request)
