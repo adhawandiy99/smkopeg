@@ -25,11 +25,17 @@
   $(document).ready(function () {
     let map, marker, markerHomepass;
     
-    // Set default view first (Prevents "Set map center and zoom first" error)
+    // Ensure the map container exists
+    if (!document.getElementById("map")) {
+        console.error("Map container not found!");
+        return;
+    }
+
+    // Initialize the map and set default view to avoid errors
     map = L.map('map', {
         fullscreenControl: true,
         fullscreenControlOptions: { position: 'topleft' }
-    }).setView([-3.319234, 114.589323], 13); // Default coordinates
+    }).setView([-3.319234, 114.589323], 13); // Default center
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; OpenStreetMap contributors'
@@ -38,7 +44,7 @@
     let allMarkers = [];
     let activeMarkers = [];
 
-    // Check for user location and update map view
+    // Geolocation: Update the view if user location is available
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(function(position) {
             let lat = position.coords.latitude;
@@ -46,7 +52,7 @@
             map.setView([lat, lon], 13);
         }, function(error) {
             console.warn("Geolocation failed:", error.message);
-            // Map already has a default view set
+            // Fallback: Use default location
         });
     } else {
         console.warn("Geolocation is not supported by this browser.");
@@ -71,11 +77,11 @@
     function renderVisibleMarkers() {
         if (!map || !map.getBounds) return; // Ensure map is ready
 
-        // Remove existing markers
+        let bounds = map.getBounds(); // Get visible area of the map
+
+        // Clear existing markers
         activeMarkers.forEach(marker => map.removeLayer(marker));
         activeMarkers = [];
-
-        let bounds = map.getBounds();
 
         allMarkers.forEach(function(markerData) {
             let lat = parseFloat(markerData.lat);
@@ -110,9 +116,10 @@
                lon >= -180 && lon <= 180;
     }
 
-    // Fetch markers only after the map is ready
+    // Load markers only when the map is ready
     map.whenReady(fetchMarkers);
 
+    // Re-render markers when the map is moved
     map.on('moveend', function() {
         renderVisibleMarkers();
     });
