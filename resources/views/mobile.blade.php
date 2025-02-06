@@ -74,7 +74,7 @@
         <a href="/form_order/new" class="{{ Request::segment(1)=='form_order'?'active-nav':'' }}"><i class="bi bi-clipboard-plus"></i><span>Input</span></a>
         <a href="/" class="circle-nav-2 {{ Request::is('/')?'active-nav':'' }}"><i class="bi bi-house-fill"></i><span>Home</span></a>
         <a href="/my_order" class="{{ Request::segment(1)=='my_order'?'active-nav':'' }}"><i class="bi bi-receipt"></i><span>MyOrder</span></a>
-        <a href="/user/{{session('auth')->id_user}}" class="{{ Request::segment(1)=='user'?'active-nav':'' }}"><i class="bi bi-file-earmark-person"></i><span>Profile</span></a>
+        <a href="/survey_layanan" class="{{ Request::segment(1)=='survey_layanan'?'active-nav':'' }}"><i class="bi bi-geo"></i><span>Survey</span></a>
     </div>
     <div class="header-bar header-fixed header-app header-auto-show">
         <a href="#" data-back-button><i class="bi bi-chevron-left font-13"></i></a>
@@ -201,6 +201,12 @@
                         <input type="checkbox" data-toggle-theme class="ios-input" id="switch-1">
                         <label class="custom-control-label" for="switch-1"></label>
                     </div>
+                </a>
+
+
+                <a href="/user/{{session('auth')->id_user}}" class="list-group-item">
+                    <i class="bi bg-blue-dark shadow-bg shadow-bg-xs bi-file-earmark-person"></i>
+                    <div>Profile</div>
                 </a>
                 <a href="/logout" class="list-group-item">
                     <i class="bi bg-blue-dark shadow-bg shadow-bg-xs bi-power"></i>
