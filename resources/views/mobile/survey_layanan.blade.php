@@ -23,52 +23,54 @@
 
 <script type="text/javascript">
   $(document).ready(function () {
-    let map, marker, markerHomepass;
+    let map, markersCluster;
     map = L.map('map', {
         fullscreenControl: true, // Enable fullscreen button
         fullscreenControlOptions: { 
             position: 'topleft' 
         }
     });
+
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; OpenStreetMap contributors'
     }).addTo(map);
-    let markersCluster = L.markerClusterGroup();
+
+    markersCluster = L.markerClusterGroup(); // Create a cluster group for markers
     let allMarkers = []; // Store all markers from the API
 
+    // Use geolocation to center the map on the user's current location
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(function(position) {
-          // Get the user's current location
-          var lat = position.coords.latitude;
-          var lon = position.coords.longitude;
-          // Center the map on the user's location
-          map.setView([lat, lon], 13);
+            // Get the user's current location
+            var lat = position.coords.latitude;
+            var lon = position.coords.longitude;
+            // Center the map on the user's location
+            map.setView([lat, lon], 13);
         }, function(error) {
-          // Fallback if the user's location is not available
-          alert("Geolocation failed: " + error.message);
-          // Optionally set a default marker or leave it null
-          map.setView([-3.319234, 114.589323], 13); // Example: Default to London
+            // Fallback if the user's location is not available
+            alert("Geolocation failed: " + error.message);
+            // Optionally set a default marker or leave it null
+            map.setView([-3.319234, 114.589323], 13); // Example: Default to a location
         });
     } else {
-      alert("Geolocation is not supported by this browser.");
+        alert("Geolocation is not supported by this browser.");
     }
-    // Listen for fullscreen toggle
-    map.on('enterFullscreen', function(){
-        console.log('Map entered fullscreen mode');
-    });
 
-    map.on('exitFullscreen', function(){
-        console.log('Map exited fullscreen mode');
-    });
-    // Fetch marker data from the server
-    function fetchMarkers() {
+    // Fetch markers from the server
+    function fetchMarkers(bounds) {
         $.ajax({
             url: "/get_markers", // Adjust your API route
             type: "GET",
             dataType: "json",
+            data: {
+                // Send map bounds to the server if needed for filtering markers
+                minLat: bounds.getSouth(),
+                maxLat: bounds.getNorth(),
+                minLon: bounds.getWest(),
+                maxLon: bounds.getEast()
+            },
             success: function(response) {
-                allMarkers = response.markers; // Store all markers
-                console.log(allMarkers);
+                allMarkers = response.markers; // Store the markers
                 renderVisibleMarkers(); // Render only visible markers
             },
             error: function(xhr) {
@@ -76,12 +78,20 @@
             }
         });
     }
-    // Fetch markers when the page loads
-    fetchMarkers();
+
+    // Initial fetch when page loads
+    map.on('load', function () {
+        fetchMarkers(map.getBounds()); // Get markers for initial view
+    });
+
+    // Re-fetch markers when map is moved or zoomed
+    map.on('moveend', function() {
+        fetchMarkers(map.getBounds()); // Fetch new markers when the map moves
+    });
 
     // Render only markers inside the displayed map view
     function renderVisibleMarkers() {
-        markersCluster.clearLayers(); // Remove existing markers
+        markersCluster.clearLayers(); // Clear previous markers from the cluster
 
         let bounds = map.getBounds(); // Get the visible map boundaries
 
@@ -106,7 +116,7 @@
                         iconAnchor: [16, 32],  // Anchor point of the icon
                         popupAnchor: [0, -32]  // Position of popup relative to the icon
                     });
-                } else{
+                } else {
                     customIcon = L.icon({
                         iconUrl: `/images/location_home.png`,  // Path to your custom Homepass icon
                         iconSize: [32, 32],  // Adjust icon size as needed
@@ -114,21 +124,26 @@
                         popupAnchor: [0, -32]  // Position of popup relative to the icon
                     });
                 }
-                let marker = L.marker(markerLatLng, { icon: customIcon }).bindPopup(`<b>${markerData.type}</b><br>${markerData.name}`);
-                markersCluster.addLayer(marker);
+
+                // Create the marker with custom icon and bind popup
+                let marker = L.marker(markerLatLng, { icon: customIcon })
+                    .bindPopup(`<b>${markerData.type}</b><br>${markerData.name}`);
+                
+                markersCluster.addLayer(marker); // Add marker to cluster
             }
         });
+
+        // Add marker cluster layer to the map
         map.addLayer(markersCluster);
     }
+
+    // Coordinate validation function
     function isValidCoordinate(lat, lon) {
         return !isNaN(lat) && !isNaN(lon) &&
                lat >= -90 && lat <= 90 &&
                lon >= -180 && lon <= 180;
     }
-    // Re-render markers when the map is moved
-    map.on('moveend', function() {
-        renderVisibleMarkers();
-    });
-  });
+
+});
 </script>
 @endsection
