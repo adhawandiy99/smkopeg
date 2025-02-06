@@ -68,6 +68,40 @@ class HomeController extends Controller
       return view('desktop.survey_layanan');
     }
   }
+  public function get_markers(Request $req)
+  {
+    // $req->validate([
+    //     'id_isp' => 'required|integer',
+    // ]);
+    $odps =  DB::table('master_odp')
+        ->select('nama_odp as name', 'lon', 'lat',
+        DB::raw("'ODP' as type"))
+        ->whereBetween('lat', [-90, 90])
+        ->whereBetween('lon', [-180, 180])
+        ->whereNotNull('lat')
+        ->whereNotNull('lon')
+        ->get();
+    $hp =  DB::table('master_homepass')
+        ->select('id_homepass as name',
+        DB::raw("SUBSTRING_INDEX(homepassed_koordinat, ',', -1) as lon"),
+        DB::raw("SUBSTRING_INDEX(homepassed_koordinat, ',', 1) as lat"),
+        DB::raw("'Homepass' as type"))
+        ->whereRaw("CAST(SUBSTRING_INDEX(homepassed_koordinat, ',', 1) AS DECIMAL(10,6)) BETWEEN -90 AND 90")
+        ->whereRaw("CAST(SUBSTRING_INDEX(homepassed_koordinat, ',', -1) AS DECIMAL(10,6)) BETWEEN -180 AND 180")
+        ->whereNotNull('homepassed_koordinat')
+        ->get();
+
+        // ->where('isp_id', $req->id_isp)
+    // Merge collections
+    $mergedData = collect($odps)->merge($hp);
+
+    
+    // Return response with the calculated distances and ODP data
+    return response()->json([
+        'success' => true,
+        'markers' => $mergedData
+    ]);
+  }
   public static function sync_daily()
   {
     $url = 'https://wmpro.tomman.app/API/get?' . http_build_query([

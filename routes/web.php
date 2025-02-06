@@ -42,6 +42,7 @@ Route::middleware(['custom-auth'])->group(function () {
     //transactional
     Route::get('/', [HomeController::class, 'home']);
     Route::get('/survey_layanan', [HomeController::class, 'survey_layanan']);
+    Route::get('/get_markers', [HomeController::class, 'get_markers']);
     Route::get('/form_order/{id}', [OrderController::class, 'form']);
     Route::post('/form_order/{id}', [OrderController::class, 'save']);
     Route::get('/approval_tl', [OrderController::class, 'approval_tl_list']);
