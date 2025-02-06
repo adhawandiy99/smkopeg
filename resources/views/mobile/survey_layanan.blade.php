@@ -98,7 +98,23 @@
 
             // Check if marker is inside the visible map bounds
             if (bounds.contains(markerLatLng)) {
-                let marker = L.marker(markerLatLng).bindPopup(`<b>${markerData.type}</b><br>${markerData.name}`);
+                let customIcon;
+                if (markerData.type === 'ODP') {
+                    customIcon = L.icon({
+                        iconUrl: `/images/location_blue.png`, // Path to your custom ODP icon
+                        iconSize: [32, 32],  // Adjust icon size as needed
+                        iconAnchor: [16, 32],  // Anchor point of the icon
+                        popupAnchor: [0, -32]  // Position of popup relative to the icon
+                    });
+                } else{
+                    customIcon = L.icon({
+                        iconUrl: `/images/location_home.png`,  // Path to your custom Homepass icon
+                        iconSize: [32, 32],  // Adjust icon size as needed
+                        iconAnchor: [16, 32],  // Anchor point of the icon
+                        popupAnchor: [0, -32]  // Position of popup relative to the icon
+                    });
+                }
+                let marker = L.marker(markerLatLng, { icon: customIcon }).bindPopup(`<b>${markerData.type}</b><br>${markerData.name}`);
                 markersCluster.addLayer(marker);
             }
         });
