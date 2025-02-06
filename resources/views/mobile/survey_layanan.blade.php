@@ -23,40 +23,23 @@
 
 <script type="text/javascript">
   $(document).ready(function () {
-    let map, marker, markerHomepass;
-    
-    // Ensure the map container exists
-    if (!document.getElementById("map")) {
-        console.error("Map container not found!");
-        return;
-    }
+    let map, markersCluster, allMarkers = [], activeMarkers = [];
 
-    // Initialize the map and set default view to avoid errors
+    // Initialize map with default view
     map = L.map('map', {
         fullscreenControl: true,
         fullscreenControlOptions: { position: 'topleft' }
-    }).setView([-3.319234, 114.589323], 13); // Default center
+    }).setView([-3.319234, 114.589323], 13);
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; OpenStreetMap contributors'
     }).addTo(map);
 
-    let allMarkers = [];
-    let activeMarkers = [];
+    markersCluster = L.markerClusterGroup();
+    map.addLayer(markersCluster);
 
-    // Geolocation: Update the view if user location is available
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(function(position) {
-            let lat = position.coords.latitude;
-            let lon = position.coords.longitude;
-            map.setView([lat, lon], 13);
-        }, function(error) {
-            console.warn("Geolocation failed:", error.message);
-            // Fallback: Use default location
-        });
-    } else {
-        console.warn("Geolocation is not supported by this browser.");
-    }
+    // Get max zoom level from the tile layer
+    let maxZoom = 18;
 
     function fetchMarkers() {
         $.ajax({
@@ -75,11 +58,13 @@
     }
 
     function renderVisibleMarkers() {
-        if (!map || !map.getBounds) return; // Ensure map is ready
+        if (!map || !map.getBounds) return;
 
-        let bounds = map.getBounds(); // Get visible area of the map
+        let bounds = map.getBounds();
+        let currentZoom = map.getZoom();
 
-        // Clear existing markers
+        // Clear previous markers
+        markersCluster.clearLayers();
         activeMarkers.forEach(marker => map.removeLayer(marker));
         activeMarkers = [];
 
@@ -104,10 +89,21 @@
                 let marker = L.marker(markerLatLng, { icon: customIcon })
                     .bindPopup(`<b>${markerData.type}</b><br>${markerData.name}`);
 
-                marker.addTo(map);
-                activeMarkers.push(marker);
+                if (currentZoom >= maxZoom) {
+                    // At max zoom, add individual markers to the map
+                    marker.addTo(map);
+                    activeMarkers.push(marker);
+                } else {
+                    // Otherwise, use marker clustering
+                    markersCluster.addLayer(marker);
+                }
             }
         });
+
+        // Only add clustering if not at max zoom
+        if (currentZoom < maxZoom) {
+            map.addLayer(markersCluster);
+        }
     }
 
     function isValidCoordinate(lat, lon) {
@@ -116,11 +112,11 @@
                lon >= -180 && lon <= 180;
     }
 
-    // Load markers only when the map is ready
+    // Load markers when the map is ready
     map.whenReady(fetchMarkers);
 
-    // Re-render markers when the map is moved
-    map.on('moveend', function() {
+    // Update markers on zoom and movement
+    map.on('moveend zoomend', function() {
         renderVisibleMarkers();
     });
 });
