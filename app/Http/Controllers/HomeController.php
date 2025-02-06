@@ -59,6 +59,15 @@ class HomeController extends Controller
 
       return response()->json(['message' => 'No image uploaded.'], 400);
   }
+  public function survey_layanan()
+  {
+    // Detect device type via request user-agent
+    if (preg_match('/mobile/i', request()->header('User-Agent'))) {
+      return view('mobile.survey_layanan');
+    } else {
+      return view('desktop.survey_layanan');
+    }
+  }
   public static function sync_daily()
   {
     $url = 'https://wmpro.tomman.app/API/get?' . http_build_query([
