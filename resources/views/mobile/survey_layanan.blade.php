@@ -24,42 +24,34 @@
 <script type="text/javascript">
   $(document).ready(function () {
     let map, marker, markerHomepass;
+    
+    // Set default view first (Prevents "Set map center and zoom first" error)
     map = L.map('map', {
-        fullscreenControl: true, // Enable fullscreen button
-        fullscreenControlOptions: { 
-            position: 'topleft' 
-        }
-    });
+        fullscreenControl: true,
+        fullscreenControlOptions: { position: 'topleft' }
+    }).setView([-3.319234, 114.589323], 13); // Default coordinates
+
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; OpenStreetMap contributors'
     }).addTo(map);
 
-    let allMarkers = []; // Store all markers from the API
-    let activeMarkers = []; // Store active markers to remove later
+    let allMarkers = [];
+    let activeMarkers = [];
 
+    // Check for user location and update map view
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(function(position) {
             let lat = position.coords.latitude;
             let lon = position.coords.longitude;
             map.setView([lat, lon], 13);
         }, function(error) {
-            alert("Geolocation failed: " + error.message);
-            map.setView([-3.319234, 114.589323], 13); // Default fallback
+            console.warn("Geolocation failed:", error.message);
+            // Map already has a default view set
         });
     } else {
-        alert("Geolocation is not supported by this browser.");
+        console.warn("Geolocation is not supported by this browser.");
     }
 
-    // Listen for fullscreen toggle
-    map.on('enterFullscreen', function(){
-        console.log('Map entered fullscreen mode');
-    });
-
-    map.on('exitFullscreen', function(){
-        console.log('Map exited fullscreen mode');
-    });
-
-    // Fetch marker data from the server
     function fetchMarkers() {
         $.ajax({
             url: "/get_markers",
@@ -67,7 +59,7 @@
             dataType: "json",
             success: function(response) {
                 allMarkers = response.markers;
-                console.log(allMarkers);
+                console.log("Markers loaded:", allMarkers);
                 renderVisibleMarkers();
             },
             error: function(xhr) {
@@ -75,11 +67,10 @@
             }
         });
     }
-    
-    fetchMarkers();
 
-    // Render only markers inside the displayed map view
     function renderVisibleMarkers() {
+        if (!map || !map.getBounds) return; // Ensure map is ready
+
         // Remove existing markers
         activeMarkers.forEach(marker => map.removeLayer(marker));
         activeMarkers = [];
@@ -90,9 +81,7 @@
             let lat = parseFloat(markerData.lat);
             let lon = parseFloat(markerData.lon);
 
-            if (!isValidCoordinate(lat, lon)) {
-                return;
-            }
+            if (!isValidCoordinate(lat, lon)) return;
 
             let markerLatLng = L.latLng(lat, lon);
 
@@ -108,7 +97,7 @@
 
                 let marker = L.marker(markerLatLng, { icon: customIcon })
                     .bindPopup(`<b>${markerData.type}</b><br>${markerData.name}`);
-                
+
                 marker.addTo(map);
                 activeMarkers.push(marker);
             }
@@ -121,7 +110,9 @@
                lon >= -180 && lon <= 180;
     }
 
-    // Re-render markers when the map is moved
+    // Fetch markers only after the map is ready
+    map.whenReady(fetchMarkers);
+
     map.on('moveend', function() {
         renderVisibleMarkers();
     });
