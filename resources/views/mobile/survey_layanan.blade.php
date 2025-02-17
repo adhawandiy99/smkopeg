@@ -14,11 +14,6 @@
       box-shadow: 0 2px 6px rgba(0,0,0,0.3);
       font-size: 14px;
   }
-
-  .form-overlay input, .form-overlay button {
-      margin-top: 5px;
-      width: 100%;
-  }
 </style>
 @endsection
 
@@ -58,15 +53,20 @@
         onAdd: function(map) {
             var div = L.DomUtil.create('div', 'form-overlay'); // Create a div
             div.innerHTML = `
-                <div class="bg-white shadow-sm rounded p-2">
-                    <div class="input-group mb-3">
-                      <input type="text" class="form-control" placeholder="Recipient's username" id="latLonInput" placeholder="-6.200000,106.816666" aria-describedby="button-addon2">
-                      <button id="gotoBtn" class="btn btn-outline-secondary" type="button" id="button-addon2">Go</button>
+                <div class="card p-3 shadow-sm rounded">
+                    <label for="latLonInput" class="form-label fw-bold small text-primary">Lat, Lon:</label>
+                    <div class="input-group">
+                        <input type="text" id="latLonInput" class="form-control form-control-lg rounded-start" 
+                            placeholder="-6.200000,106.816666">
+                        <button id="gotoBtn" class="btn btn-primary btn-lg rounded-end">
+                            <i class="fas fa-map-marker-alt"></i> Go
+                        </button>
                     </div>
                 </div>
             `;
             return div;
         }
+
 
     });
 
