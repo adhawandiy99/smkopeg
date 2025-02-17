@@ -54,11 +54,11 @@
             var div = L.DomUtil.create('div', 'form-overlay'); // Create a div
             div.innerHTML = `
                 <div class="card p-3 shadow-sm rounded">
-                    <label for="latLonInput" class="form-label fw-bold small text-primary">Lat, Lon:</label>
+                    <label for="latLonInput" class="form-label fw-bold small text-primary">Tikor (Lat,Lon) :</label>
                     <div class="input-group">
-                        <input type="text" id="latLonInput" class="form-control form-control-lg rounded-start" 
+                        <input type="text" id="latLonInput" class="form-control form-control-sm rounded-start" 
                             placeholder="-6.200000,106.816666">
-                        <button id="gotoBtn" class="btn btn-primary btn-lg rounded-end">
+                        <button id="gotoBtn" class="btn btn-primary btn-sm rounded-end">
                             <i class="fas fa-map-marker-alt"></i> Go
                         </button>
                     </div>
