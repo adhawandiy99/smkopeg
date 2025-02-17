@@ -50,6 +50,8 @@
         attribution: '&copy; OpenStreetMap contributors'
     }).addTo(map);
 
+
+
     // Custom Form Control
     var FormControl = L.Control.extend({
         options: { position: 'topright' }, // Position of form
@@ -57,13 +59,9 @@
             var div = L.DomUtil.create('div', 'form-overlay'); // Create a div
             div.innerHTML = `
                 <div class="bg-white shadow-sm rounded p-2">
-                    <label for="latLonInput" class="form-label fw-bold">Lat, Lon:</label>
-                    <div class="input-group input-group-sm">
-                        <input type="text" id="latLonInput" class="form-control" 
-                            placeholder="-6.200000,106.816666">
-                        <button id="gotoBtn" class="btn btn-primary">
-                            <i class="fas fa-map-marker-alt"></i> Go
-                        </button>
+                    <div class="input-group mb-3">
+                      <input type="text" class="form-control" placeholder="Recipient's username" id="latLonInput" placeholder="-6.200000,106.816666" aria-describedby="button-addon2">
+                      <button id="gotoBtn" class="btn btn-outline-secondary" type="button" id="button-addon2">Go</button>
                     </div>
                 </div>
             `;
