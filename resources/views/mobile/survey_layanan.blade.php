@@ -57,12 +57,18 @@
         onAdd: function(map) {
             var div = L.DomUtil.create('div', 'form-overlay'); // Create a div
             div.innerHTML = `
-                <label>Latitude, Longitude:</label>
-                <input type="text" id="latLonInput" placeholder="-6.200000,106.816666">
-                <button id="gotoBtn">Go</button>
+                <div class="d-flex align-items-center gap-2 p-2 bg-white shadow-sm rounded">
+                    <label for="latLonInput" class="form-label mb-0 fw-bold">Lat, Lon:</label>
+                    <input type="text" id="latLonInput" class="form-control form-control-sm" 
+                        placeholder="-6.200000,106.816666" style="width: 180px;">
+                    <button id="gotoBtn" class="btn btn-primary btn-sm">
+                        <i class="fas fa-map-marker-alt"></i> Go
+                    </button>
+                </div>
             `;
             return div;
         }
+
     });
 
     // Add the form control to the map
@@ -140,7 +146,7 @@
     }
 
     $("#gotoBtn").on("click", gotoKoordinat);
-    
+
     // Function to move map and place marker
     function gotoKoordinat() {
         var input = document.getElementById("latLonInput").value.trim();
@@ -151,7 +157,7 @@
             var lng = parseFloat(parts[1]);
 
             if (!isNaN(lat) && !isNaN(lng)) {
-                map.setView([lat, lng], 15); // Zoom in
+                map.setView([lat, lng], 18); // Zoom in
 
                 
             } else {
