@@ -2,9 +2,24 @@
 
 @section('css')
 <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-<link href='https://api.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v1.0.1/leaflet.fullscreen.css' rel='stylesheet' />
+<link rel="stylesheet" href="https://api.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v1.0.1/leaflet.fullscreen.css" />
 <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.css" />
 <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.Default.css" />
+<style type="text/css">
+  /* Form overlay styling */
+  .form-overlay {
+      background: rgba(255, 255, 255, 0.9);
+      padding: 10px;
+      border-radius: 5px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+      font-size: 14px;
+  }
+
+  .form-overlay input, .form-overlay button {
+      margin-top: 5px;
+      width: 100%;
+  }
+</style>
 @endsection
 
 @section('tittle', 'Survey Layanan')
@@ -18,7 +33,7 @@
 @endsection
 @section('js')
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-<script src='https://api.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v1.0.1/Leaflet.fullscreen.min.js'></script>
+<script src="https://api.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v1.0.1/Leaflet.fullscreen.min.js"></script>
 <script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster.js"></script>
 
 <script type="text/javascript">
@@ -34,6 +49,24 @@
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; OpenStreetMap contributors'
     }).addTo(map);
+
+    // Custom Form Control
+    var FormControl = L.Control.extend({
+        options: { position: 'topright' }, // Position of form
+
+        onAdd: function(map) {
+            var div = L.DomUtil.create('div', 'form-overlay'); // Create a div
+            div.innerHTML = `
+                <label>Latitude, Longitude:</label>
+                <input type="text" id="latLonInput" placeholder="-6.200000,106.816666">
+                <button onclick="gotoKoordinat()">Go</button>
+            `;
+            return div;
+        }
+    });
+
+    // Add the form control to the map
+    map.addControl(new FormControl());
 
     markersCluster = L.markerClusterGroup();
     map.addLayer(markersCluster);
@@ -103,6 +136,26 @@
         // Only add clustering if not at max zoom
         if (currentZoom < maxZoom) {
             map.addLayer(markersCluster);
+        }
+    }
+    // Function to move map and place marker
+    function gotoKoordinat() {
+        var input = document.getElementById("latLonInput").value.trim();
+        var parts = input.split(",");
+
+        if (parts.length === 2) {
+            var lat = parseFloat(parts[0]);
+            var lng = parseFloat(parts[1]);
+
+            if (!isNaN(lat) && !isNaN(lng)) {
+                map.setView([lat, lng], 15); // Zoom in
+
+                
+            } else {
+                alert("Masukkan koordinat yang valid! Format: -6.2,106.8");
+            }
+        } else {
+            alert("Format salah! Gunakan: lat,lon (contoh: -6.2,106.8)");
         }
     }
 
