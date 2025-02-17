@@ -125,8 +125,13 @@
                     popupAnchor: [0, -32]
                 });
 
-                let marker = L.marker(markerLatLng, { icon: customIcon })
-                    .bindPopup(`<b>${markerData.type}</b><br>${markerData.name}`);
+                let marker = L.marker(markerLatLng, { icon: customIcon });
+                if(markerData.type === 'ODP'){
+                  marker.bindPopup(`<b>${markerData.type}</b><br>${markerData.name}`);
+                }else{
+                  marker.bindPopup(`<b>${markerData.type}</b><br>${markerData.name}<br><b>${markerData.resident_type}</b>`);
+                }
+                
 
                 if (currentZoom >= maxZoom) {
                     // At max zoom, add individual markers to the map

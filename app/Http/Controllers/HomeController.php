@@ -75,7 +75,7 @@ class HomeController extends Controller
     // ]);
     $odps =  DB::table('master_odp')
         ->select('nama_odp as name', 'lon', 'lat',
-        DB::raw("'ODP' as type"))
+        DB::raw("'ODP' as type, 'ODP' as resident_type"))
         ->whereBetween('lat', [-90, 90])
         ->whereBetween('lon', [-180, 180])
         ->whereNotNull('lat')
@@ -85,7 +85,7 @@ class HomeController extends Controller
         ->select('id_homepass as name',
         DB::raw("SUBSTRING_INDEX(homepassed_koordinat, ',', -1) as lon"),
         DB::raw("SUBSTRING_INDEX(homepassed_koordinat, ',', 1) as lat"),
-        DB::raw("'Homepass' as type"))
+        DB::raw("'Homepass' as type, resident_type"))
         ->whereRaw("CAST(SUBSTRING_INDEX(homepassed_koordinat, ',', 1) AS DECIMAL(10,6)) BETWEEN -90 AND 90")
         ->whereRaw("CAST(SUBSTRING_INDEX(homepassed_koordinat, ',', -1) AS DECIMAL(10,6)) BETWEEN -180 AND 180")
         ->whereNotNull('homepassed_koordinat')
