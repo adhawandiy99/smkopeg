@@ -53,17 +53,18 @@
     // Custom Form Control
     var FormControl = L.Control.extend({
         options: { position: 'topright' }, // Position of form
-
         onAdd: function(map) {
             var div = L.DomUtil.create('div', 'form-overlay'); // Create a div
             div.innerHTML = `
-                <div class="d-flex align-items-center gap-2 p-2 bg-white shadow-sm rounded">
-                    <label for="latLonInput" class="form-label mb-0 fw-bold">Lat, Lon:</label>
-                    <input type="text" id="latLonInput" class="form-control form-control-sm" 
-                        placeholder="-6.200000,106.816666" style="width: 180px;">
-                    <button id="gotoBtn" class="btn btn-primary btn-sm">
-                        <i class="fas fa-map-marker-alt"></i> Go
-                    </button>
+                <div class="bg-white shadow-sm rounded p-2">
+                    <label for="latLonInput" class="form-label fw-bold">Lat, Lon:</label>
+                    <div class="input-group input-group-sm">
+                        <input type="text" id="latLonInput" class="form-control" 
+                            placeholder="-6.200000,106.816666">
+                        <button id="gotoBtn" class="btn btn-primary">
+                            <i class="fas fa-map-marker-alt"></i> Go
+                        </button>
+                    </div>
                 </div>
             `;
             return div;
