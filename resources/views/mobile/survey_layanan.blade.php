@@ -53,7 +53,6 @@
         onAdd: function(map) {
             var div = L.DomUtil.create('div', 'form-overlay'); // Create a div
             div.innerHTML = `
-                <div class="card p-3 shadow-sm rounded">
                     <label for="latLonInput" class="form-label fw-bold small text-primary">Tikor (Lat,Lon) :</label>
                     <div class="input-group">
                         <input type="text" id="latLonInput" class="form-control form-control-sm rounded-start" 
@@ -62,7 +61,6 @@
                             <i class="fas fa-map-marker-alt"></i> Go
                         </button>
                     </div>
-                </div>
             `;
             return div;
         }
