@@ -59,7 +59,7 @@
             div.innerHTML = `
                 <label>Latitude, Longitude:</label>
                 <input type="text" id="latLonInput" placeholder="-6.200000,106.816666">
-                <button onclick="gotoKoordinat()">Go</button>
+                <button id="gotoBtn">Go</button>
             `;
             return div;
         }
@@ -138,6 +138,9 @@
             map.addLayer(markersCluster);
         }
     }
+
+    $("#gotoBtn").on("click", gotoKoordinat);
+    
     // Function to move map and place marker
     function gotoKoordinat() {
         var input = document.getElementById("latLonInput").value.trim();
